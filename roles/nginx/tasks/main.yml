@@ -1,0 +1,14 @@
+- name: install nginx
+  apt: name=nginx state=latest
+
+- name: install python-passlib
+  apt: pkg=python-passlib state=latest install_recommends=yes
+
+- name: create kibana user
+  htpasswd: path=/etc/nginx/htpasswd.users name=fcskibana password={{kibanapwd}} owner=root group=www-data mode=0640
+
+- name: Configure nginx sites
+  template: src=nginx_conf.j2
+            dest=/etc/nginx/sites-available/default
+  notify:
+  - restart nginx

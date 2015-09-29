@@ -1,0 +1,6 @@
+[all:vars]
+env = uat
+ansible_ssh_user = root
+
+[log_servers]
+192.168.0.177

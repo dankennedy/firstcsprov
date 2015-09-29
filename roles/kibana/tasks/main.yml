@@ -1,0 +1,21 @@
+- name: Download Kibana
+  get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz
+           dest=/usr/local/src/kibana-4.0.1-linux-x64.tar.gz
+
+- name: Extract and install Kibana
+  unarchive: src=/usr/local/src/kibana-4.0.1-linux-x64.tar.gz
+             dest=/opt/kibana
+             copy=no
+             creates=/opt/kibana
+
+- name: Configure default settings for Kibana
+  template: src=kibana.yml.j2
+            dest=/opt/kibana/config/kibana.yml
+            mode=u+r
+
+- name: Create Kibana service
+  template: src=kibana_service.j2
+            dest=/etc/init.d/kibana4
+            mode=u+rwx
+  notify:
+  - restart kibana

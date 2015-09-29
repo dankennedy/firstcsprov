@@ -1,0 +1,10 @@
+- name: add ElasticSearch repository
+  apt_repository: repo='deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main' state=present
+
+- name: Install ElasticSearch
+  apt: pkg=elasticsearch state=latest
+
+- name: config
+  copy: src=elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+  notify:
+    - restart elasticsearch

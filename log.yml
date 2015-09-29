@@ -1,0 +1,9 @@
+- hosts: all
+  vars_files:
+    - 'vars/creds.yml'
+  roles:
+    - {role: base,          tags: ['base']}
+    - {role: logstash,      tags: ['logstash']}
+    - {role: elasticsearch, tags: ['elasticsearch']}
+    - {role: kibana,        tags: ['kibana']}
+    - {role: nginx,         tags: ['nginx']}

@@ -1,0 +1,16 @@
+input {
+  tcp {
+    port => 9506
+    codec => "json"
+  }
+}
+filter {
+  date {
+    match => [ "time", "yyyy-MM-dd HH:mm:ss,SSS" ]
+  }
+}
+output {
+  elasticsearch {
+    host => localhost
+  }
+}

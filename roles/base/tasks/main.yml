@@ -1,0 +1,17 @@
+- name: enable sudoers %sudo
+  lineinfile: dest=/etc/sudoers regexp='^#? ?\%sudo        ALL\=\(ALL\)' line='%sudo        ALL=(ALL)       ALL'
+  tags: ['users']
+
+- name: add admin users
+  user: name={{ item.admin }} password={{ item.password }} state=present groups=adm,sys,sudo shell=/bin/bash
+  tags: ['users']
+  with_items: users
+
+- name: add admin ssh keys
+  authorized_key: user={{ item.admin }} key='{{ item.ssh_key }}'
+  tags: ['users']
+  with_items: users
+
+- name: add root ssh keys
+  authorized_key: user=root key='{{ item.ssh_key }}'
+  with_items: users
