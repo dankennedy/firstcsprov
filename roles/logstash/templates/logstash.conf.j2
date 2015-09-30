@@ -2,6 +2,10 @@ input {
   tcp {
     port => 9506
     codec => "json"
+    ssl_enable => true
+    ssl_verify => false
+    ssl_cert => "/etc/logstash/pki/logstash-forwarder.crt"
+    ssl_key => "/etc/logstash/pki/logstash-forwarder.key"
   }
 }
 filter {

@@ -11,7 +11,33 @@
   apt_repository: repo='deb http://packages.elasticsearch.org/logstash/1.5/debian stable main' state=present
 
 - name: Install Logstash
-  apt: pkg=logstash state=latest
+  apt: pkg=logstash
+       state=latest
+
+- name: Create PKI folder
+  file: path=/etc/logstash/pki
+        state=directory
+        owner=logstash
+        group=logstash
+        mode=u+r
+
+- name: Install certificate
+  shell: echo "{{logstash_cert}}" > /etc/logstash/pki/logstash-forwarder.crt
+
+- name: Install key
+  shell: echo "{{logstash_key}}" > /etc/logstash/pki/logstash-forwarder.key
+
+- name: Set cert permissions
+  file: path=/etc/logstash/pki/logstash-forwarder.crt
+        owner=logstash
+        group=logstash
+        mode=u+r
+
+- name: Set key permissions
+  file: path=/etc/logstash/pki/logstash-forwarder.key
+        owner=logstash
+        group=logstash
+        mode=u+r
 
 - name: Configure default settings for Logstash
   template: src=logstash.conf.j2
@@ -19,6 +45,11 @@
             owner=logstash
             group=logstash
             mode=0644
+
+- name: Create Logstash service
+  copy: src=logstash_service
+        dest=/etc/init.d/logstash
+        mode=u+rwx
   notify:
    - restart logstash
 
