@@ -1,12 +1,27 @@
 - name: Download Kibana
-  get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz
-           dest=/usr/local/src/kibana-4.0.1-linux-x64.tar.gz
+  get_url: url=https://download.elasticsearch.org/kibana/kibana/{{kibana_version_arch}}.tar.gz
+           dest=/usr/local/src/{{kibana_version_arch}}.tar.gz
+           force=no
+
+- name: Check current version of kibana
+  shell: grep -c '{{kibana_version}}' /opt/kibana/README.txt | wc -l
+  register: version_match
+
+- name: Remove old version of Kibana
+  file: path=/opt/kibana
+        state=absent
+  when: version_match.stdout != "1"
 
 - name: Extract and install Kibana
-  unarchive: src=/usr/local/src/kibana-4.0.1-linux-x64.tar.gz
-             dest=/opt/kibana
+  unarchive: src=/usr/local/src/{{kibana_version_arch}}.tar.gz
+             dest=/opt
              copy=no
-             creates=/opt/kibana
+             creates=/opt/{{kibana_version_arch}}
+  when: version_match.stdout != "1"
+
+- name: Rename extracted folder
+  command: mv /opt/{{kibana_version_arch}} /opt/kibana
+  when: version_match.stdout != "1"
 
 - name: Configure default settings for Kibana
   template: src=kibana.yml.j2

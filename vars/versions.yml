@@ -1,0 +1,2 @@
+kibana_version: 4.1.2
+kibana_version_arch: kibana-{{kibana_version}}-linux-x64
