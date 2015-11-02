@@ -4,7 +4,7 @@
            force=no
 
 - name: Check current version of kibana
-  shell: grep -c '{{kibana_version}}' /opt/kibana/README.txt | wc -l
+  shell: grep '{{kibana_version}}' /opt/kibana/README.txt | wc -l
   register: version_match
 
 - name: Remove old version of Kibana
@@ -14,13 +14,8 @@
 
 - name: Extract and install Kibana
   unarchive: src=/usr/local/src/{{kibana_version_arch}}.tar.gz
-             dest=/opt
+             dest=/opt/kibana
              copy=no
-             creates=/opt/{{kibana_version_arch}}
-  when: version_match.stdout != "1"
-
-- name: Rename extracted folder
-  command: mv /opt/{{kibana_version_arch}} /opt/kibana
   when: version_match.stdout != "1"
 
 - name: Configure default settings for Kibana
